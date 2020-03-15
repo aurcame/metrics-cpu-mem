@@ -1,12 +1,13 @@
-# CPU and memory metrics
+# CPU and memory metrics script and Dockerfile
 
 
 # About
 ---
-This repository contains Dockerimage for building [aurcame/metrics](https://hub.docker.com/repository/docker/aurcame/metrics) image.
+This repository contains:
+  - python script "**metrics**" that collect metrics about your linux server and prints basic information about your OS' cpu and memory  to console.
+  - Dockerimage for building [aurcame/metrics](https://hub.docker.com/repository/docker/aurcame/metrics) image.
 
-And a python script "**metrics**" that collect metrics about your linux server and prints basic information about your OS' cpu and memory  to console.
-
+# Metrics script
 # Prerequisites
 ---
   This requried platform with insatlled [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
@@ -18,7 +19,7 @@ metrics script uses:
 - [psutil](https://psutil.readthedocs.io/en/latest/) - cross-platform library for retrieving information on running processes and system utilization
 - [colorama](https://pypi.org/project/colorama/) - cross-platform library for producing colored terminal text and cursor positioning
     
-# Using script
+# Using "metrics" script
 ---
 The script requred single parameter to specify which metrics set to print:
 
@@ -30,7 +31,7 @@ and it accept second (optional) parameter:
 
 **col** - prints information colorized 
 
-# Running
+# Running script
 ---
 Examples:
 
@@ -63,14 +64,47 @@ $ ./metrics mem
   swap free 0
 ```
 
-# Building image
+Colorized output:
+```sh
+$ ./metrics cpu col
+```
+
+# Plugins
 ---
-You can also build an image based on Ubuntu 18.04 and Python3 that starts the "**metrics**" script
+
+metrics script uses:
+- [psutil](https://psutil.readthedocs.io/en/latest/) - cross-platform library for retrieving information on running processes and system utilization
+- [colorama](https://pypi.org/project/colorama/) - cross-platform library for producing colored terminal text and cursor positioning
+
+# Install
+---
+
 First you need to clone repository to your local destination:
 ```sh
 git clone git@github.com:aurcame/metrics-cpu-mem.git
+
 ```
-then buid and run the image with "**metrics**" script parameters
+
+
+
+# Metrics image
+# Building docker image with Dockerfile
+--- 
+This Dockerfile builds an image based on [Ubuntu](https://hub.docker.com/_/ubuntu) [18.04](https://hub.docker.com/layers/ubuntu/library/ubuntu/18.04/images/sha256-4d07b5b0cd47c06a3ca847536a3e05901c6bf9d9f52dbb0e6a7fff9141453f11?context=explore) with [Pyhon3](https://www.python.org/downloads/) that starts the "**metrics**" script.
+
+# Prerequisites
+---
+  This requried platform with insatlled [Docker](https://docs.docker.com/install/).
+  To install Docker, please follow instructions according to your platform:
+- [CentOS](https://docs.docker.com/install/linux/docker-ce/centos/)
+- [Debian](https://docs.docker.com/install/linux/docker-ce/debian/)
+- [Fedora](https://docs.docker.com/install/linux/docker-ce/fedora/)
+- [Ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
+- [MacOS desktop](https://docs.docker.com/docker-for-mac/install/)
+- [Windows 10 desktop](https://docs.docker.com/docker-for-windows/install/)
+
+# Running image
+build and run the image with "**metrics**" script parameters
 ```sh
 docker build -t metrics .
 docker run -it --rm --name metrics aurcame/metrics mem col
@@ -86,9 +120,9 @@ docker run -it --rm --name metrics aurcame/metrics mem col
   swap free 0
 ```
 
-# Dockerhub image 
+# Dockerhub repository
 ---
-Please find resulted image in my  [DockerHub repository](https://github.com/aurcame/metrics-cpu-mem)
+Please find resulted image in my DockerHub [repository](https://github.com/aurcame/metrics-cpu-mem)
 
 # Contacts
 ---
