@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+import sys
+import psutil
+from colorama import init, Fore, Style
+
+# auto reset styles and colors after each iteraction
+init(autoreset=True)
+
+# command line argument2: colorise output
+arg_col=""
+
+# command line exeptions
+try:
+    arg_cpu = sys.argv[1]
+except IndexError:
+    raise SystemExit(f"Missing argument(s). Usage: {sys.argv[0]} mem|cpu <col>")
+try:
+    arg_col = sys.argv[2]
+except: pass
+
+if arg_cpu=="cpu":
+    cpu_var=psutil.cpu_times()
+    # print colorised
+    if arg_col=="col":
+        print("CPU metrics:")
+        print(Style.DIM + "system.cpu." + Style.NORMAL + "idle " + Fore.GREEN + "\t %s" % (cpu_var.idle))
+        print(Style.DIM + "system.cpu." + Style.NORMAL + "user " + Fore.GREEN + "\t %s" % (cpu_var.user))
+        print(Style.DIM + "system.cpu." + Style.NORMAL + "guest " + Fore.GREEN + "\t %s" % (cpu_var.guest))
+        print(Style.DIM + "system.cpu." + Style.NORMAL + "iowait " + Fore.GREEN + "\t %s" % (cpu_var.iowait))
+        print(Style.DIM + "system.cpu." + Style.NORMAL + "stolen " + Fore.GREEN + "\t %s" % (cpu_var.steal))
+        print(Style.DIM + "system.cpu." + Style.NORMAL + "system " + Fore.GREEN + "\t %s" % (cpu_var.system))
+
+    #print("\n\033[2msystem.cpu.\033[0midle \033[32m%s \n\033[0m\033[2msystem.cpu.\033[0muser \033[32m%s \n\033[0m\033[2msystem.cpu.\033[0mguest \033[32m%s \n\033[0m\033[2msystem.cpu.\033[0miowait \033[32m%s \n\033[0m\033[2msystem.cpu.\033[0mstolen \033[32m%s \n\033[0m\033[2msystem.cpu.\033[0msystem \033[32m%s" % (cpu_times_var.idle, cpu_times_var.user, cpu_times_var.guest, cpu_times_var.iowait, cpu_times_var.steal, cpu_times_var.system))
+    else:
+        # print without colors
+        print("CPU Metrics:\nsystem.cpu.idle \t%s \nsystem.cpu.user \t%s \nsystem.cpu.guest \t%s \nsystem.cpu.iowait \t%s \nsystem.cpu.stolen \t%s \nsystem.cpu.system \t%s" % (cpu_var.idle, cpu_var.user, cpu_var.guest, cpu_var.iowait, cpu_var.steal, cpu_var.system))
+
+elif arg_cpu=="mem":
+    mem_var=psutil.virtual_memory()
+    
+    swap_var=psutil.swap_memory()
+    print("Memory metrics:")
+
+    if arg_col=="col":
+        # print colorised output
+        print(Style.DIM + "virtual " + Style.NORMAL + "total " + Fore.GREEN + "\t %s" % (mem_var.total))
+        print(Style.DIM + "virtual " + Style.NORMAL + "used " + Fore.GREEN + "\t %s" % (mem_var.used))
+        print(Style.DIM + "virtual " + Style.NORMAL + "free " + Fore.GREEN + "\t %s" % (mem_var.free))
+        print(Style.DIM + "virtual " + Style.NORMAL + "shared " + Fore.GREEN + "\t %s" % (mem_var.shared))
+    
+        print(Style.DIM + "swap " + Style.NORMAL + "total " + Fore.GREEN + "\t %s" % (swap_var.total))
+        print(Style.DIM + "swap " + Style.NORMAL + "used " + Fore.GREEN + "\t %s" % (swap_var.used))
+        print(Style.DIM + "swap " + Style.NORMAL + "free " + Fore.GREEN + "\t %s" % (swap_var.free))
+    else:   
+        # print without colors
+        print("Memory metrics:\nvirtual total\t%s \nvirtual user\t%s \nvirtual free\t%s \nvirtual shared\t%s \nswap total\t%s \nswap used\t%s \nswap free \t%s" % (mem_var.total, mem_var.used, mem_var.free, mem_var.shared, swap_var.total, swap_var.used, swap_var.free))
+
+else:
+    # if no arguments print error msg
+    print(Fore.RED + "No arguments." + Fore.WHITE + " Please use required \"cpu\" or \"mem\" arguments. Use \"col\" argument for color output.\nUsage: %s cpu|mem <col>\nExample: %s cpu col" %( sys.argv[0], sys.argv[0] ))
