@@ -5,7 +5,7 @@
 ---
 This repository contains:
   - python script "**metrics**" that collect metrics about your linux server and prints basic information about your OS' cpu and memory  to console.
-  - Dockerimage for building [aurcame/metrics](https://hub.docker.com/repository/docker/aurcame/metrics) image.
+  - Dockerfile for building [aurcame/metrics](https://hub.docker.com/repository/docker/aurcame/metrics) image.
 
 # Metrics script
 # Prerequisites
@@ -21,7 +21,8 @@ metrics script uses:
     
 # Using "metrics" script
 ---
-The script requred single parameter to specify which metrics set to print:
+
+:
 
 
 **cpu** - prints CPU metrics
@@ -118,6 +119,20 @@ docker run -it --rm --name metrics aurcame/metrics mem col
   swap total 0
   swap used 0
   swap free 0
+```
+
+To be able to display information about processes running on the host machine from within the container environment you should run container with --pid=host parameter.
+*example:*
+```sh
+  docker run -it --rm --entrypoint /bin/bash --pid=host aurcame/metrics
+  ps aux
+```
+
+To display usernames for processes running on the host machine from within the container environment you should mount /etc/passwd as volume.
+*example:*
+```sh
+  docker run -it --rm --entrypoint /bin/bash --pid=host -v /etc/passwd:/etc/passwd aurcame/metrics
+  cat /etc/passwd
 ```
 
 # Dockerhub repository
