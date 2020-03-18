@@ -1,0 +1,82 @@
+#!/usr/bin/env python3
+import sys
+import psutil
+from colorama import init, Fore, Style
+
+
+# string constants for output
+CPU_IDLE= "time spent doing nothing"
+CPU_USER= "time spent by normal processes executing in user mode; this includes guest time"
+CPU_GUEST= "time spent running a virtual CPU for guest OS (with Linux kernel)"
+CPU_IOWAIT= "time spent waiting for I/O to complete. This is not accounted in idle time counter"
+CPU_STEAL= "time spent by other OS running in a virtualized environment"
+CPU_SYSTEM= "time spent by processes executing in kernel mode"
+
+MEM_TOTAL= "total physical memory"
+MEM_USED= "memory used; depends on the platform; for informational purposes only"
+MEM_FREE= "memory not being used at all that is available. this doesn't reflect the actual memory available"
+MEM_SHARED= "memory that may be simultaneously accessed by multiple processes"
+SWAP_TOTAL= "total swap memory"
+SWAP_USED= "used swap memory"
+SWAP_FREE= "free swap memory"
+
+# auto reset styles and colors after each iteraction
+init(autoreset=True)
+
+# command line argument 2: colorise output
+arg_col=""
+
+# command line exeptions
+try:
+    # read argument 1
+    arg_cpu = sys.argv[1]
+except IndexError:
+    raise SystemExit(f"Missing argument(s). Usage: {sys.argv[0]} mem|cpu <col>")
+try:
+    # read argument 2
+    arg_col = sys.argv[2]
+except: pass
+
+if arg_cpu=="cpu":
+    
+    # get CPU metrics 
+    cpu_var=psutil.cpu_times()
+    print("CPU metrics (seconds the CPU has spent in the given mode):")
+
+    # print colorised
+    if arg_col=="col":
+        print(Style.DIM + "system.cpu." + Style.NORMAL + "idle \t" + Fore.GREEN + "%s\t" % (cpu_var.idle), CPU_IDLE)
+        print(Style.DIM + "system.cpu." + Style.NORMAL + "user \t" + Fore.GREEN + "%s\t" % (cpu_var.user), CPU_USER)
+        print(Style.DIM + "system.cpu." + Style.NORMAL + "guest\t" + Fore.GREEN + "%s\t" % (cpu_var.guest), CPU_GUEST)
+        print(Style.DIM + "system.cpu." + Style.NORMAL + "iowait\t" + Fore.GREEN + "%s\t" % (cpu_var.iowait), CPU_IOWAIT)
+        print(Style.DIM + "system.cpu." + Style.NORMAL + "stolen\t" + Fore.GREEN + "%s\t" % (cpu_var.steal), CPU_STEAL)
+        print(Style.DIM + "system.cpu." + Style.NORMAL + "system\t" + Fore.GREEN + "%s\t" % (cpu_var.system), CPU_SYSTEM)
+    else:
+        # print without colors
+        print("system.cpu.idle \t%s \nsystem.cpu.user \t%s \nsystem.cpu.guest \t%s \nsystem.cpu.iowait \t%s \nsystem.cpu.stolen \t%s \nsystem.cpu.system \t%s" % (cpu_var.idle, cpu_var.user, cpu_var.guest, cpu_var.iowait, cpu_var.steal, cpu_var.system))
+
+elif arg_cpu=="mem":
+    
+    # get memory metrics
+    mem_var=psutil.virtual_memory()
+    swap_var=psutil.swap_memory()
+
+    print("Memory metrics (in bytes):")
+
+    if arg_col=="col":
+        # print colorised output
+        print(Style.DIM + "virtual " + Style.NORMAL + "total\t" + Fore.GREEN + "%s\t" % (mem_var.total), MEM_TOTAL)
+        print(Style.DIM + "virtual " + Style.NORMAL + "used\t" + Fore.GREEN + "%s\t" % (mem_var.used), MEM_USED)
+        print(Style.DIM + "virtual " + Style.NORMAL + "free\t" + Fore.GREEN + "%s\t" % (mem_var.free), MEM_FREE)
+        print(Style.DIM + "virtual " + Style.NORMAL + "shared\t" + Fore.GREEN + "%s\t" % (mem_var.shared), MEM_SHARED)
+    
+        print(Style.DIM + "swap " + Style.NORMAL + "total\t" + Fore.GREEN + "%s\t" % (swap_var.total), SWAP_TOTAL)
+        print(Style.DIM + "swap " + Style.NORMAL + "used\t" + Fore.GREEN + "%s\t" % (swap_var.used), SWAP_USED)
+        print(Style.DIM + "swap " + Style.NORMAL + "free\t" + Fore.GREEN + "%s\t" % (swap_var.free), SWAP_FREE)
+    else:   
+        # print without colors
+        print("virtual total\t%s \nvirtual user\t%s \nvirtual free\t%s \nvirtual shared\t%s \nswap total\t%s \nswap used\t%s \nswap free \t%s" % (mem_var.total, mem_var.used, mem_var.free, mem_var.shared, swap_var.total, swap_var.used, swap_var.free))
+
+else:
+    # if incorrect arguments, print error msg
+    print(Fore.RED + "No arguments." + Fore.WHITE + " Please use required \"cpu\" or \"mem\" arguments. Use \"col\" argument for color output.\nUsage: %s cpu|mem <col>\nExample: %s cpu col" %( sys.argv[0], sys.argv[0] ))
