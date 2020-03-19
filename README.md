@@ -95,10 +95,11 @@ metrics script uses:
 
 # Install
 ---
-Assuming you have Prerequisites installed, clone repository to your local destination:
+Assuming you have Prerequisites installed, clone repository to your local destination, Go to the directory metrics-cpu-mem and cun the script from command line:
 ```sh
 git clone git@github.com:aurcame/metrics-cpu-mem.git
-
+cd metrics-cpu-mem
+./metrics cpu
 ```
 
 
@@ -120,7 +121,7 @@ This Dockerfile builds an image based on [Ubuntu](https://hub.docker.com/_/ubunt
 - [Windows 10 desktop](https://docs.docker.com/docker-for-windows/install/)
 
 # Running image
-build and run the image with "**metrics**" script parameters
+build and then run the image with "**metrics**" script parameters
 ```sh
 docker build -t metrics .
 docker run -it --rm --name metrics aurcame/metrics mem col
@@ -155,7 +156,7 @@ To display usernames for processes running on the host machine from within the c
 
 # Dockerhub repository
 ---
-Please find resulted image in my DockerHub [repository](https://github.com/aurcame/metrics-cpu-mem)
+You can save your time running container without building, directly from repository. Please find resulted image in my DockerHub: [repository](https://github.com/aurcame/metrics-cpu-mem)
 
 # Contacts
 ---
