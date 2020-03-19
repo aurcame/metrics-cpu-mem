@@ -4,14 +4,28 @@
 # About
 ---
 This repository contains:
-  - python script "**metrics**" that collect metrics about your linux server and prints basic information about your OS' cpu and memory  to console.
+  - python script "**metrics**" which collects metrics about your linux server and prints basic information about cpu and memory to console:
+    - **system.cpu.idle**:   time spent doing nothing
+    - **system.cpu.user**:   time spent by normal processes executing in user mode; - this includes guest time
+    - **system.cpu.guest**:  time spent running a virtual CPU for guest OS (with Linux kernel)
+    - **system.cpu.iowait**: time spent waiting for I/O to complete. This is not accounted in idle time counter
+    - **system.cpu.stolen**: time spent by other OS running in a virtualized environment
+    - **system.cpu.system**: time spent by processes executing in kernel mode
+
+    - **virtual total**:  total physical memory
+    - **virtual used**:   memory used; depends on the platform; for informational purposes only
+    - **virtual free**:   memory not being used at all that is available. this doesn't reflect the actual memory available
+    - **virtual shared**: memory that may be simultaneously accessed by multiple processes
+    - **swap total**:     total swap memory
+    - **swap used**:      used swap memory
+    - **swap free**:      free swap memory
+    
   - Dockerfile for building [aurcame/metrics](https://hub.docker.com/repository/docker/aurcame/metrics) image.
 
-# Metrics script
+# 1 "metrics" script
 # Prerequisites
 ---
-  This requried platform with insatlled [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
-  and [Pyhon3](https://www.python.org/downloads/).
+  This requried Linux based platform with [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Pyhon3](https://www.python.org/downloads/) insatlled.
 
 # Plugins
 ---
@@ -19,22 +33,23 @@ metrics script uses:
 - [psutil](https://psutil.readthedocs.io/en/latest/) - cross-platform library for retrieving information on running processes and system utilization
 - [colorama](https://pypi.org/project/colorama/) - cross-platform library for producing colored terminal text and cursor positioning
     
-# Using "metrics" script
+# Running "metrics" script from console
 ---
 
-:
+*Syntax:*
+```sh
+  ./metrics cpu|mem <col>
+```
 
-
+first parameter is required. Possible values:
 **cpu** - prints CPU metrics
 **mem** - prints RAM metrics
 
-and it accept second (optional) parameter:
-
+second (optional) parameter:
 **col** - prints information colorized 
 
-# Running script
 ---
-Examples:
+# Examples
 
 CPU Metrics
 ```sh
@@ -65,10 +80,11 @@ $ ./metrics mem
   swap free 0
 ```
 
-Colorized output:
+Colorized output also shows parameter definitions:
 ```sh
 $ ./metrics cpu col
 ```
+![Build Status](http://www.naryshkin.pp.ua/wp-content/uploads/2020/03/screen1.png)
 
 # Plugins
 ---
@@ -79,8 +95,7 @@ metrics script uses:
 
 # Install
 ---
-
-First you need to clone repository to your local destination:
+Assuming you have Prerequisites installed, clone repository to your local destination:
 ```sh
 git clone git@github.com:aurcame/metrics-cpu-mem.git
 
@@ -88,7 +103,7 @@ git clone git@github.com:aurcame/metrics-cpu-mem.git
 
 
 
-# Metrics image
+# 2 Metrics image
 # Building docker image with Dockerfile
 --- 
 This Dockerfile builds an image based on [Ubuntu](https://hub.docker.com/_/ubuntu) [18.04](https://hub.docker.com/layers/ubuntu/library/ubuntu/18.04/images/sha256-4d07b5b0cd47c06a3ca847536a3e05901c6bf9d9f52dbb0e6a7fff9141453f11?context=explore) with [Pyhon3](https://www.python.org/downloads/) that starts the "**metrics**" script.
@@ -127,13 +142,16 @@ To be able to display information about processes running on the host machine fr
   docker run -it --rm --entrypoint /bin/bash --pid=host aurcame/metrics
   ps aux
 ```
+![Build Status](http://www.naryshkin.pp.ua/wp-content/uploads/2020/03/screen3.png)
 
 To display usernames for processes running on the host machine from within the container environment you should mount /etc/passwd as volume.
 *example:*
 ```sh
   docker run -it --rm --entrypoint /bin/bash --pid=host -v /etc/passwd:/etc/passwd aurcame/metrics
   cat /etc/passwd
+  ps aux | grep dell
 ```
+![Build Status](http://www.naryshkin.pp.ua/wp-content/uploads/2020/03/screen4.png)
 
 # Dockerhub repository
 ---
